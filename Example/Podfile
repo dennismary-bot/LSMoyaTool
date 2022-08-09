@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+target 'LSMoyaTool_Example' do
+  pod 'LSMoyaTool', :path => '../'
+
+  target 'LSMoyaTool_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

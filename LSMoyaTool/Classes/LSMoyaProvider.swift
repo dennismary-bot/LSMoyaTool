@@ -30,7 +30,6 @@ public class LSMoyaProvider<Target: TargetType> {
     public func request(_ target: Target) -> Observable<Moya.Response> {
         return provider.rx
             .request(target)
-            .filterSuccessfulStatusAndRedirectCodes()
             .asObservable()
     }
   
@@ -69,13 +68,13 @@ extension LSMoyaProvider {
 
 public extension ObservableType where Element == Response {
     
-    func mapToModel<T: Decodable>(_: T.Type, decoder: JSONDecoder = JSONDecoder.init(), keyPath: String = "data") -> Observable<T> {
+    func mapToModel<T: Decodable>(_: T.Type, decoder: JSONDecoder = JSONDecoder.init(), keyPath: String? = "data") -> Observable<T> {
         return map({ (response) -> T in
             let object = try LSMoyaProviderDecodable.decodableObject(data: response.data, type: T.self, decoder: decoder, keyPath: keyPath)
             return object
         }).catch { (err) -> Observable<T> in
             return Observable<T>.create({ (observe) -> Disposable in
-                observe.onError(err)
+                observe.onError(moyaFinalError(error: err))
                 return Disposables.create()
             })}
     }
@@ -105,7 +104,7 @@ public extension ObservableType where Element == Response {
             })}
     }
     
-    func moyaFinalError(error: Error) -> LSMoyaError {
+    private func moyaFinalError(error: Error) -> LSMoyaError {
         var finalError = LSMoyaError.server("-1", "")
         if let error = error as? MoyaError, let reponse = error.response {
             if reponse.statusCode == NSURLErrorTimedOut {

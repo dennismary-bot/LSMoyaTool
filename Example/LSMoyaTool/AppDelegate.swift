@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import LSMoyaTool
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,8 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        LSMoyaConfiguration.shared.startWith(self)
+        
         return true
     }
 
@@ -42,5 +46,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+}
+
+struct BaseNetModel: Decodable {
+    let code: Int?
+    let msg: String?
+    var isSucceed: Bool {
+        return 200 == code
+    }
+}
+
+extension AppDelegate: LSMoyaConfigurationProtocol {
+    func host() -> String {
+        return "https://news-at.zhihu.com"
+    }
+    
+    func baseModelIsSucceed(_ data: Data) -> Bool {
+        let baseModel = try? JSONDecoder.init().decode(BaseNetModel.self, from: data)
+        return baseModel?.isSucceed ?? false
+    }
+    
+    func baseModelStatusCode(_ data: Data) -> String {
+        let baseModel = try? JSONDecoder.init().decode(BaseNetModel.self, from: data)
+        return String(baseModel?.code ?? 0)
+    }
+    
+    func baseModelMessage(_ data: Data) -> String {
+        let baseModel = try? JSONDecoder.init().decode(BaseNetModel.self, from: data)
+        return baseModel?.msg ?? ""
+    }
+    
+    func networkResponseCode() -> Int {
+        return 200
+    }
+    
+    func openLogger() -> Bool {
+        return true
+    }
+    
 }
 

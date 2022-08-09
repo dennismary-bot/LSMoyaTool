@@ -1,0 +1,34 @@
+PODS:
+  - Alamofire (5.6.1)
+  - LSMoyaTool (0.1.0):
+    - Moya/RxSwift (= 15.0.0)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
+  - Moya/RxSwift (15.0.0):
+    - Moya/Core
+    - RxSwift (~> 6.0)
+  - RxSwift (6.5.0)
+
+DEPENDENCIES:
+  - LSMoyaTool (from `../`)
+  - Moya/RxSwift
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - Moya
+    - RxSwift
+
+EXTERNAL SOURCES:
+  LSMoyaTool:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
+  LSMoyaTool: 97290a6883a7422ea6068fd379a7475921ccc0b0
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
+
+PODFILE CHECKSUM: f8df2138e2a612ab677e4de92d7b2534c5a96ab9
+
+COCOAPODS: 1.11.3

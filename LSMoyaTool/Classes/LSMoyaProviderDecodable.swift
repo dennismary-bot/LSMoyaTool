@@ -25,10 +25,11 @@ struct LSMoyaProviderDecodable {
             do {
                 nestedData = try JSONSerialization.data(withJSONObject: json)
                 nestedObj = try decoder.decode(T.self, from: nestedData)
+                return nestedObj
             } catch {
-                throw LSMoyaError.dataMapError("数据解析出错")
+                throw LSMoyaError.dataMapError
             }
-            return nestedObj
+            
         }
         
         let isSucceed = LSMoyaConfiguration.shared.lsMoyaConfigur?.baseModelIsSucceed?(data) ?? false
@@ -45,13 +46,19 @@ struct LSMoyaProviderDecodable {
                     let nestedObj = try decoder.decode(T.self, from: nestedData)
                     return nestedObj
                 } catch {
-                    throw LSMoyaError.dataMapError("数据解析出错")
+                    throw LSMoyaError.dataMapError
                 }
-            } else {
-                throw LSMoyaError.server(statusCode, message)
             }
+           
+            throw LSMoyaError.serverDataError
+            
         }
-        throw LSMoyaError.server(statusCode, message)
+        
+        if let dict = json as? [String: Any], let dataDict = dict["data"] as? [String: Any] {
+            throw LSMoyaError.server(statusCode, message, dataDict)
+        }else {
+            throw LSMoyaError.server(statusCode, message, [:])
+        }
 
     }
 
@@ -68,7 +75,7 @@ struct LSMoyaProviderDecodable {
                         let nestedObj = try decoder.decode(T.self, from: nestedData)
                         nestedObjs.append(nestedObj)
                     } catch {
-                        throw LSMoyaError.dataMapError("数据解析出错")
+                        throw LSMoyaError.dataMapError
                     }
                 }
                 return nestedObjs
@@ -93,16 +100,22 @@ struct LSMoyaProviderDecodable {
                         let nestedObj = try decoder.decode(T.self, from: nestedData)
                         nestedObjs.append(nestedObj)
                     } catch {
-                        throw LSMoyaError.dataMapError("数据解析出错")
+                        throw LSMoyaError.dataMapError
                     }
                 }
                 return nestedObjs
-            } else {
-                throw LSMoyaError.serverDataError
             }
-        } else {
-            throw LSMoyaError.server(statusCode, message)
+            
+            throw LSMoyaError.serverDataError
+            
         }
+        
+        if let dict = json as? [String: Any], let dataDict = dict["data"] as? [String: Any] {
+            throw LSMoyaError.server(statusCode, message, dataDict)
+        }else {
+            throw LSMoyaError.server(statusCode, message, [:])
+        }
+        
     }
 
 }

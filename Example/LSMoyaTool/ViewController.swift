@@ -36,7 +36,7 @@ class ViewController: UIViewController {
                 print(result.stories?.first?.hint ?? "")
             }, onError: { error in
                 if let error = error as? LSMoyaError {
-                    fatalError(error.errorMessage)
+                    print(error)
                 }
             }).disposed(by: disposeBag)
         

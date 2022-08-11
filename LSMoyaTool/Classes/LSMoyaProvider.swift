@@ -105,7 +105,7 @@ public extension ObservableType where Element == Response {
     }
     
     private func moyaFinalError(error: Error) -> LSMoyaError {
-        var finalError = LSMoyaError.server("-1", "")
+        var finalError = LSMoyaError.server("-1", "网络异常，请稍后再试", [:])
         if let error = error as? MoyaError, let reponse = error.response {
             if reponse.statusCode == NSURLErrorTimedOut {
                 finalError = LSMoyaError.timeOut
